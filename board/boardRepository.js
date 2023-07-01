@@ -1,25 +1,38 @@
 const Board = require("./boardModel");
 
-function getBoards() {}
+async function getBoards() {
+  const boardList = await Board.find().sort({ dateCreated: 1 });
+  return boardList;
+}
 
-function createBoard(obj) {
+async function createBoard(obj) {
   const board = new Board({
     name: obj.name,
+    dateCreated: new Date(),
   });
 
-  board.save();
+  return await board.save();
 }
 
-function deleteBoard(id) {
-  const board = Board.findById(id);
+async function deleteBoard(id) {
+  const result = await Board.deleteOne({ _id: id });
+  return result;
 }
 
-function updateBoard() {
-  const board = Board.findById(id);
+async function updateBoard(obj) {
+  const result = await Board.updateOne(
+    { _id: obj.id },
+    {
+      name: obj.name,
+    }
+  );
+
+  return result;
 }
 
 module.exports = {
   createBoard,
   deleteBoard,
   updateBoard,
+  getBoards,
 };

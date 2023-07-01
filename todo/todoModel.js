@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { boardSchema } = require("../board/boardModel");
 
 const todoSchema = new mongoose.Schema({
   task: String,
@@ -7,6 +8,8 @@ const todoSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  boardId: mongoose.Types.ObjectId,
+  dateCreated: Date,
 });
 
 const Todo = mongoose.model("Todo", todoSchema);

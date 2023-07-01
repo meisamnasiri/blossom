@@ -1,29 +1,44 @@
 const Todo = require("./todoModel");
 
-function getTodo() {
-  const todo = Todo.findById(id);
+async function getTodoList(boardId) {
+  const todoList = await Todo.find({ boardId: boardId }).sort({
+    dateCreated: 1,
+  });
+  return todoList;
 }
 
-function createTodo() {
+async function createTodo(obj) {
   const todo = new Todo({
-    task: "exercise",
-    dueDate: "june 30 2023",
+    task: obj.task,
+    dueDate: obj.dueDate,
+    boardId: obj.boardId,
+    dateCreated: new Date(),
   });
 
-  todo.save();
+  return await todo.save();
 }
 
-function deleteTodo(id) {
-  const todo = Todo.findById(id);
+async function deleteTodo(id) {
+  const result = await Todo.deleteOne({ _id: id });
+  return result;
 }
 
-function updateTodo() {
-  const todo = Todo.findById(id);
+async function updateTodo(obj) {
+  const result = await Todo.updateOne(
+    { _id: obj._id },
+    {
+      task: obj.task,
+      dueDate: obj.dueDate,
+      isFinished: obj.isFinished,
+    }
+  );
+
+  return result;
 }
 
 module.exports = {
   createTodo,
   deleteTodo,
   updateTodo,
-  getTodo,
+  getTodoList,
 };
