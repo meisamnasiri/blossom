@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const { boardSchema } = require("../board/boardModel");
 
-const todoSchema = new mongoose.Schema({
+const TodoSchema = new mongoose.Schema({
   task: String,
   dueDate: Date,
   isFinished: {
@@ -12,6 +12,6 @@ const todoSchema = new mongoose.Schema({
   dateCreated: Date,
 });
 
-const Todo = mongoose.model("Todo", todoSchema);
+const Todo = mongoose.model("Todo", TodoSchema);
 
 module.exports = Todo;
