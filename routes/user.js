@@ -5,37 +5,51 @@ const {
   updateUser,
   findUser,
 } = require("../user/userRepository");
+const auth = require("../middleware/auth");
 
 const router = express.Router();
 
-router.get("/:id", async (req, res) => {
-  const id = req.params.id;
-  const user = await findUser(id);
+// Who uses this one?
+router.get("/", async (req, res) => {
+  const filter = {
+    _id: req.body._id,
+    email: req.body.email,
+  };
+  const user = await findUser(filter);
   res.status(200).send(user);
 });
 
 router.post("/", async (req, res) => {
-  const obj = req.body;
-  const user = await registerUser(obj);
-  res.status(200).send(user);
-});
-
-router.delete("/:id", async (req, res) => {
-  const userId = req.params.id;
-  const result = await deleteUser(userId);
-  res.status(200).send(result);
-});
-
-router.put("/", async (req, res) => {
-  const userId = req.body.id;
-  const userUpdate = {
-    _id: req.body._id,
+  const info = {
     name: req.body.name,
     email: req.body.email,
     password: req.body.password,
   };
-  const result = await updateUser(userUpdate);
+  const user = await registerUser(info);
+  res.status(200).send(user);
+});
+
+router.delete("/", auth, async (req, res) => {
+  const userId = req.user._id;
+  const result = await deleteUser(userId);
   res.status(200).send(result);
+});
+
+router.put("/", auth, async (req, res) => {
+  const filter = {
+    _id: req.user._id,
+  };
+  let user = await findUser(filter);
+  if (!user) return res.status(400).send("No such user exists.");
+
+  const userUpdate = {
+    _id: filter._id,
+    name: req.body.name,
+    email: req.body.email,
+    password: req.body.password,
+  };
+  user = await updateUser(userUpdate);
+  res.status(200).send(user);
 });
 
 module.exports = router;

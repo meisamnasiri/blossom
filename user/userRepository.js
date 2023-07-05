@@ -2,19 +2,19 @@ const User = require("./userModel");
 const bcrypt = require("bcrypt");
 
 async function findUser(filter) {
-  if (!filter.id) {
+  if (!filter._id) {
     const user = await User.findOne({ email: filter.email });
     return user;
   }
-  const user = await User.findById(filter.id);
+  const user = await User.findById(filter._id);
   return user;
 }
 
-async function registerUser(obj) {
+async function registerUser(info) {
   let user = new User({
-    name: obj.name,
-    email: obj.email,
-    password: obj.password,
+    name: info.name,
+    email: info.email,
+    password: info.password,
   });
 
   // Hashing the password.
@@ -36,19 +36,27 @@ async function deleteUser(userId) {
 }
 
 async function updateUser(userUpdate) {
-  const salt = await bcrypt.genSalt(10);
-  const hashed = await bcrypt.hash(userUpdate.password, salt);
+  let hashed;
+  if (userUpdate.password) {
+    const salt = await bcrypt.genSalt(10);
+    hashed = await bcrypt.hash(userUpdate.password, salt);
+  } else {
+    hashed = undefined;
+  }
 
-  const result = await User.updateOne(
+  const user = await User.findOneAndUpdate(
     { _id: userUpdate._id },
     {
       name: userUpdate.name,
       email: userUpdate.email,
       password: hashed,
+    },
+    {
+      new: true,
     }
   );
 
-  return result;
+  return user;
 }
 
 module.exports = {
