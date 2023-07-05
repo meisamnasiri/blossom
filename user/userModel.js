@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const jwt = require("jsonwebtoken");
 
 const validateEmail = function (email) {
   const regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
@@ -29,6 +30,11 @@ const UserSchema = new mongoose.Schema({
     required: [true, "Password is required."],
   },
 });
+
+UserSchema.methods.generateAuthToken = function () {
+  const token = jwt.sign({ _id: this._id }, "privateKey");
+  return token;
+};
 
 const User = mongoose.model("User", UserSchema);
 
