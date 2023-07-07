@@ -1,8 +1,8 @@
 const Board = require("./boardModel");
 const Todo = require("../todo/todoModel");
 
-async function getBoard(id) {
-  const board = await Board.findById(id);
+async function findBoard(boardId) {
+  const board = await Board.findById(boardId);
   return board;
 }
 
@@ -18,6 +18,7 @@ async function createBoard(obj) {
 
 async function deleteBoard(boardId) {
   const result = await Board.deleteOne({ _id: boardId });
+  // Deleting the todos in the board as well.
   if (result.acknowledged) {
     const boardTodos = await Todo.deleteMany({ boardId: boardId });
     return boardTodos;
@@ -41,5 +42,5 @@ module.exports = {
   createBoard,
   deleteBoard,
   updateBoard,
-  getBoard,
+  findBoard,
 };

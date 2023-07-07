@@ -5,8 +5,9 @@ const {
   updateTodo,
   deleteTodos,
 } = require("../todo/todoRepository");
-const { getBoard } = require("../board/boardRepository");
+const { findBoard } = require("../board/boardRepository");
 const auth = require("../middleware/auth");
+const Todo = require("../todo/todoModel");
 
 const router = express.Router();
 
@@ -17,13 +18,10 @@ router.get("/", auth, async (req, res) => {
 });
 
 router.post("/", auth, async (req, res) => {
-  const board = await getBoard(req.body.boardId);
-  console.log(req.user._id); // 64a6d58d727731a9b89e80a2
-  console.log(board.userId); // new ObjectId("64a6d58d727731a9b89e80a2")
-  if (!(req.user._id == board.userId)) {
-    return res.status(403).send("You can not access others board.");
+  const board = await findBoard(req.body.boardId);
+  if (!(req.user._id === board.userId.toString())) {
+    return res.status(403).send("You can not access this board.");
   }
-
   const obj = {
     task: req.body.task,
     dueDate: req.body.dueDate,
@@ -33,9 +31,20 @@ router.post("/", auth, async (req, res) => {
   res.status(200).send(todo);
 });
 
-router.delete("/", async (req, res) => {
-  const idsArray = req.body._id;
-  const result = await deleteTodos(idsArray);
+router.delete("/", auth, async (req, res) => {
+  let idList = req.body.idList;
+  let cleanList = [];
+
+  for (const id of idList) {
+    const todo = await Todo.findById(id);
+    const board = await findBoard(todo.boardId);
+
+    if (req.user._id === board.userId.toString()) {
+      cleanList.push(id);
+    }
+  }
+
+  const result = await deleteTodos(cleanList);
   res.status(200).send(result);
 });
 

@@ -18,8 +18,8 @@ async function createTodo(obj) {
   return await todo.save();
 }
 
-async function deleteTodos(ids) {
-  const result = await Todo.deleteMany({ _id: { $in: ids } });
+async function deleteTodos(idList) {
+  const result = await Todo.deleteMany({ _id: { $in: idList } });
   return result;
 }
 
