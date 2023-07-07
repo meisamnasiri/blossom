@@ -17,9 +17,9 @@ router.post("/", auth, async (req, res) => {
   res.status(200).send(board);
 });
 
-router.delete("/:id", async (req, res) => {
-  const id = req.params.id;
-  const result = await deleteBoard(id);
+router.delete("/:id", auth, async (req, res) => {
+  const boardId = req.params.id;
+  const result = await deleteBoard(boardId);
   res.status(200).send(result);
 });
 
