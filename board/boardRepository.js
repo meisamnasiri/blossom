@@ -1,14 +1,15 @@
 const Board = require("./boardModel");
 
-async function getBoards() {
-  const boardList = await Board.find().sort({ dateCreated: 1 });
-  return boardList;
+async function getBoard(id) {
+  const board = await Board.findById(id);
+  return board;
 }
 
 async function createBoard(obj) {
   const board = new Board({
     name: obj.name,
     dateCreated: new Date(),
+    userId: obj.userId,
   });
 
   return await board.save();
@@ -34,5 +35,5 @@ module.exports = {
   createBoard,
   deleteBoard,
   updateBoard,
-  getBoards,
+  getBoard,
 };

@@ -9,14 +9,13 @@ const auth = require("../middleware/auth");
 
 const router = express.Router();
 
-// Who uses this one?
 router.get("/", async (req, res) => {
   const filter = {
     _id: req.body._id,
     email: req.body.email,
   };
   const user = await findUser(filter);
-  res.status(200).send(user);
+  res.status(200).send({ _id: user._id, name: user.name, email: user.email });
 });
 
 router.post("/", async (req, res) => {
@@ -26,7 +25,12 @@ router.post("/", async (req, res) => {
     password: req.body.password,
   };
   const user = await registerUser(info);
-  res.status(200).send(user);
+  const token = user.generateAuthToken();
+
+  res
+    .status(200)
+    .header("x-auth-token", token)
+    .send({ name: user.name, email: user.email });
 });
 
 router.delete("/", auth, async (req, res) => {

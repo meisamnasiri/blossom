@@ -21,13 +21,7 @@ async function registerUser(info) {
   const salt = await bcrypt.genSalt(10);
   user.password = await bcrypt.hash(user.password, salt);
 
-  await user.save();
-
-  return {
-    name: user.name,
-    email: user.email,
-    _id: user._id,
-  };
+  return await user.save();
 }
 
 async function deleteUser(userId) {

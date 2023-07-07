@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const { boardSchema } = require("../board/boardModel");
+const { ObjectId } = require("mongodb");
 
 const TodoSchema = new mongoose.Schema({
   task: String,
@@ -8,7 +8,9 @@ const TodoSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
-  boardId: mongoose.Types.ObjectId,
+  boardId: {
+    type: ObjectId,
+  },
   dateCreated: Date,
 });
 

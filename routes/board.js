@@ -6,15 +6,15 @@ const {
   deleteBoard,
   updateBoard,
 } = require("../board/boardRepository");
+const auth = require("../middleware/auth");
 
-router.get("/list", async (req, res) => {
-  const boardList = await getBoards();
-  res.status(200).send(boardList);
-});
-
-router.post("/", async (req, res) => {
-  const result = await createBoard(req.body);
-  res.status(200).send(result);
+router.post("/", auth, async (req, res) => {
+  const obj = {
+    name: req.body.name,
+    userId: req.user._id,
+  };
+  const board = await createBoard(obj);
+  res.status(200).send(board);
 });
 
 router.delete("/:id", async (req, res) => {
