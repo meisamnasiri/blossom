@@ -23,8 +23,11 @@ router.delete("/:id", auth, async (req, res) => {
   res.status(200).send(result);
 });
 
-router.put("/", async (req, res) => {
-  const obj = req.body;
+router.put("/", auth, async (req, res) => {
+  const obj = {
+    _id: req.user._id,
+    name: req.body.name,
+  };
   const result = await updateBoard(obj);
   res.status(200).send(result);
 });

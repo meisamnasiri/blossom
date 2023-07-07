@@ -28,7 +28,7 @@ async function deleteBoard(boardId) {
 
 async function updateBoard(obj) {
   const result = await Board.updateOne(
-    { _id: obj.id },
+    { _id: obj._id },
     {
       name: obj.name,
     }
