@@ -7,7 +7,7 @@ const {
 } = require("../todo/todoRepository");
 const { findBoard } = require("../board/boardRepository");
 const auth = require("../middleware/auth");
-const Todo = require("../todo/todoModel");
+const { Todo, validateTodo } = require("../todo/todoModel");
 
 const router = express.Router();
 
@@ -18,6 +18,9 @@ router.get("/", auth, async (req, res) => {
 });
 
 router.post("/", auth, async (req, res) => {
+  const { error } = validateTodo(req.body);
+  if (error) return res.status(400).send(error.message);
+
   const board = await findBoard(req.body.boardId);
   if (!(req.user._id === board.userId.toString())) {
     return res.status(403).send("You can not access this board.");

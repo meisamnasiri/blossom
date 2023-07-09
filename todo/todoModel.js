@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const { ObjectId } = require("mongodb");
+const Joi = require("joi");
 
 const TodoSchema = new mongoose.Schema({
   task: {
@@ -26,4 +27,16 @@ const TodoSchema = new mongoose.Schema({
 
 const Todo = mongoose.model("Todo", TodoSchema);
 
-module.exports = Todo;
+const joiSchema = Joi.object({
+  task: Joi.string().min(1).max(50).required(),
+  dueDate: Joi.date(),
+  dateCreated: Joi.date().default(Date.now),
+  isFinished: Joi.boolean().default(false),
+  boardId: Joi.string().required(),
+});
+
+function validateTodo(todo) {
+  return joiSchema.validate(todo);
+}
+
+module.exports = { Todo, validateTodo };

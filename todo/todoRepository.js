@@ -1,4 +1,4 @@
-const Todo = require("./todoModel");
+const { Todo } = require("./todoModel");
 
 async function getTodoList(boardId) {
   const todoList = await Todo.find({ boardId: boardId }).sort({

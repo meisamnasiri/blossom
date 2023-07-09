@@ -1,5 +1,5 @@
 const Board = require("./boardModel");
-const Todo = require("../todo/todoModel");
+const { Todo } = require("../todo/todoModel");
 
 async function findBoard(boardId) {
   const board = await Board.findById(boardId);
