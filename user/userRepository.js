@@ -14,12 +14,12 @@ async function registerUser(info) {
   let user = new User({
     name: info.name,
     email: info.email,
-    password: info.password,
   });
 
   // Hashing the password.
   const salt = await bcrypt.genSalt(10);
-  user.password = await bcrypt.hash(user.password, salt);
+  const hashed = await bcrypt.hash(info.password, salt);
+  user.password = hashed;
 
   return await user.save();
 }

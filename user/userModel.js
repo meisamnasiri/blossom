@@ -9,9 +9,9 @@ const validateEmail = function (email) {
 const UserSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: true,
-    min: [3, "Name should be at least 3 characters long."],
+    min: [2, "Name should be at least 2 characters long."],
     max: [50, "Too long for a name!"],
+    required: true,
   },
   email: {
     type: String,
@@ -19,7 +19,7 @@ const UserSchema = new mongoose.Schema({
     unique: [true, "This email is already registered."],
     trim: true,
     lowercase: true,
-    max: 255,
+    max: 150,
     validate: {
       validator: validateEmail,
       message: "Invalid email address.",
