@@ -36,8 +36,8 @@ router.post("/", auth, async (req, res) => {
 
 router.delete("/", auth, async (req, res) => {
   let idList = req.body.idList;
-  let cleanList = [];
 
+  let cleanList = [];
   for (const id of idList) {
     const todo = await Todo.findById(id);
     const board = await findBoard(todo.boardId);
@@ -52,6 +52,9 @@ router.delete("/", auth, async (req, res) => {
 });
 
 router.put("/", async (req, res) => {
+  const { error } = validateTodo(req.body);
+  if (error) return res.status(400).send(error.message);
+
   const obj = {
     task: req.body.task,
     dueDate: req.body.dueDate,

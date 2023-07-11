@@ -1,4 +1,4 @@
-const Board = require("./boardModel");
+const { Board } = require("./boardModel");
 const { Todo } = require("../todo/todoModel");
 
 async function findBoard(boardId) {

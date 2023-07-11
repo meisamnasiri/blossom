@@ -6,6 +6,7 @@ const {
   deleteBoard,
   updateBoard,
 } = require("../board/boardRepository");
+const { validateBoard } = require("../board/boardModel");
 const auth = require("../middleware/auth");
 
 router.post("/", auth, async (req, res) => {
@@ -13,6 +14,10 @@ router.post("/", auth, async (req, res) => {
     name: req.body.name,
     userId: req.user._id,
   };
+
+  const { error } = validateBoard(obj);
+  if (error) return res.status(400).send(error.message);
+
   const board = await createBoard(obj);
   res.status(200).send(board);
 });
@@ -28,6 +33,10 @@ router.put("/", auth, async (req, res) => {
     _id: req.user._id,
     name: req.body.name,
   };
+
+  const { error } = validateBoard(obj);
+  if (error) return res.status(400).send(error.message);
+
   const result = await updateBoard(obj);
   res.status(200).send(result);
 });

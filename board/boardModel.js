@@ -1,5 +1,6 @@
 const { ObjectId } = require("mongodb");
 const mongoose = require("mongoose");
+const Joi = require("joi");
 
 const BoardSchema = new mongoose.Schema({
   name: {
@@ -21,4 +22,14 @@ const BoardSchema = new mongoose.Schema({
 
 const Board = mongoose.model("Board", BoardSchema);
 
-module.exports = Board;
+const schema = Joi.object({
+  name: Joi.string().required().min(1).max(25),
+  dateCreated: Joi.date(),
+  userId: Joi.string().required(),
+});
+
+function validateBoard(board) {
+  return schema.validate(board);
+}
+
+module.exports = { Board, validateBoard };
