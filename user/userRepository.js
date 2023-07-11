@@ -1,4 +1,4 @@
-const User = require("./userModel");
+const { User } = require("./userModel");
 const bcrypt = require("bcrypt");
 
 async function findUser(filter) {
@@ -10,15 +10,15 @@ async function findUser(filter) {
   return user;
 }
 
-async function registerUser(info) {
+async function registerUser(obj) {
   let user = new User({
-    name: info.name,
-    email: info.email,
+    name: obj.name,
+    email: obj.email,
   });
 
   // Hashing the password.
   const salt = await bcrypt.genSalt(10);
-  const hashed = await bcrypt.hash(info.password, salt);
+  const hashed = await bcrypt.hash(obj.password, salt);
   user.password = hashed;
 
   return await user.save();

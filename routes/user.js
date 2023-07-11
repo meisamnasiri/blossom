@@ -5,6 +5,7 @@ const {
   updateUser,
   findUser,
 } = require("../user/userRepository");
+const { validateUser } = require("../user/userModel");
 const auth = require("../middleware/auth");
 
 const router = express.Router();
@@ -19,12 +20,17 @@ router.get("/", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-  const info = {
+  const obj = {
     name: req.body.name,
     email: req.body.email,
     password: req.body.password,
+    repeatPassword: req.body.repeatPassword,
   };
-  const user = await registerUser(info);
+
+  const { error } = validateUser(obj, "post");
+  if (error) return res.status(400).send(error.message);
+
+  const user = await registerUser(obj);
   const token = user.generateAuthToken();
 
   res
@@ -40,20 +46,21 @@ router.delete("/", auth, async (req, res) => {
 });
 
 router.put("/", auth, async (req, res) => {
-  const filter = {
+  const obj = {
     _id: req.user._id,
-  };
-  let user = await findUser(filter);
-  if (!user) return res.status(400).send("No such user exists.");
-
-  const userUpdate = {
-    _id: filter._id,
     name: req.body.name,
     email: req.body.email,
     password: req.body.password,
+    repeatPassword: req.body.repeatPassword,
   };
-  user = await updateUser(userUpdate);
-  res.status(200).send(user);
+  let user = await findUser(obj);
+  if (!user) return res.status(400).send("No such user exists.");
+
+  const { error } = validateUser(obj, "put");
+  if (error) return res.status(400).send(error.message);
+
+  const result = await updateUser(obj);
+  res.status(200).send(result);
 });
 
 module.exports = router;
