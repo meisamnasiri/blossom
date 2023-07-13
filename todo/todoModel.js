@@ -11,6 +11,10 @@ const TodoSchema = new mongoose.Schema({
     trim: true,
   },
   dueDate: Date,
+  hasArrived: {
+    type: Boolean,
+    default: false,
+  },
   isFinished: {
     type: Boolean,
     default: false,
